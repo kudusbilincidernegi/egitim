@@ -2,8 +2,7 @@ name: Kudus Bilinci Pages
 
 on:
   push:
-    branches:
-      - main
+    branches: ["main"]
   workflow_dispatch:
 
 permissions:
@@ -24,17 +23,32 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Repository'yi al
-        uses: actions/checkout@v6
+      - name: Dosyalari al
+        uses: actions/checkout@v4
 
-      - name: GitHub Pages'i hazırla
+      - name: Site klasorunu bul
+        id: site
+        shell: bash
+        run: |
+          INDEX_FILE="$(find . -type f -name 'index.html' -not -path './.git/*' | head -n 1)"
+          if [ -z "$INDEX_FILE" ]; then
+            echo "index.html bulunamadi"
+            find . -maxdepth 4 -type f
+            exit 1
+          fi
+          SITE_DIR="$(dirname "$INDEX_FILE")"
+          echo "index.html bulundu: $INDEX_FILE"
+          echo "Yayin klasoru: $SITE_DIR"
+          echo "site_dir=$SITE_DIR" >> "$GITHUB_OUTPUT"
+
+      - name: Pages ayarla
         uses: actions/configure-pages@v5
 
-      - name: Uygulama dosyalarını yükle
-        uses: actions/upload-pages-artifact@v4
+      - name: Siteyi hazirla
+        uses: actions/upload-pages-artifact@v3
         with:
-          path: ./kudus_bilinci_final_static
+          path: ${{ steps.site.outputs.site_dir }}
 
-      - name: Yayınla
+      - name: Yayina al
         id: deployment
         uses: actions/deploy-pages@v4
