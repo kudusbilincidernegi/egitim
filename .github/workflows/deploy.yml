@@ -26,14 +26,21 @@ jobs:
       - name: Dosyalari al
         uses: actions/checkout@v4
 
+      - name: ZIP dosyasini ac
+        run: |
+          ZIP_FILE="$(find . -maxdepth 2 -type f -iname '*.zip' | head -n 1)"
+          echo "Bulunan ZIP: $ZIP_FILE"
+          mkdir -p extracted
+          unzip -o "$ZIP_FILE" -d extracted
+          find extracted -maxdepth 3 -type f
+
       - name: Site klasorunu bul
         id: site
         shell: bash
         run: |
-          INDEX_FILE="$(find . -type f -name 'index.html' -not -path './.git/*' | head -n 1)"
+          INDEX_FILE="$(find extracted -type f -name 'index.html' | head -n 1)"
           if [ -z "$INDEX_FILE" ]; then
             echo "index.html bulunamadi"
-            find . -maxdepth 4 -type f
             exit 1
           fi
           SITE_DIR="$(dirname "$INDEX_FILE")"
