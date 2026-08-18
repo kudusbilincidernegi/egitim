@@ -1,0 +1,11 @@
+{
+  "id": "/egitim/",
+  "name": "Kudüs Bilinci Eğitim Komisyonu",
+  "short_name": "Kudüs Bilinci",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#fbf7ef",
+  "theme_color": "#11264f",
+  "lang": "tr"
+}
